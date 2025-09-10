@@ -1297,7 +1297,7 @@ end)
   local FFTab = Window:CreateTab("FF", 4483362458) -- Title, Image
 
   local Button = FFTab:CreateToggle({
-    Name = "Op auto equip sword",
+    Name = "Best kill aura for loopfights rn",
     Callback = function()
         local range = 10
 local player = game:GetService("Players").LocalPlayer
