@@ -1411,10 +1411,97 @@ print("ForceEquip script enabled.")
     end,
  })
 
- local Button = FFTab:CreateButton({
-    Name = "OP float",
+ local Toggle = FFTab:CreateToggle({
+    Name = "Activate sky",
     Callback = function()  
-loadstring(game:HttpGet("https://pastefy.app/Qc1ZIUwO/raw", true))()
+        local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = workspace
+
+-- CONFIG
+local SKY_POSITION = Vector3.new(0, 50000, 0)
+local SKY_PLATFORM_SIZE = Vector3.new(8, 1, 8)
+local SKY_PLATFORM_OFFSET = Vector3.new(0, -3.5, 0)
+local SKY_SNAP_DELAY = 0.05
+
+local player = Players.LocalPlayer
+
+-- Toggle off if already active
+if _G.SkyActive then
+    _G.SkyActive = false
+    if _G.SkyPlatformConn then _G.SkyPlatformConn:Disconnect() _G.SkyPlatformConn=nil end
+    if _G.SkyRespawnConn then _G.SkyRespawnConn:Disconnect() _G.SkyRespawnConn=nil end
+    if _G.SkyPlatform then _G.SkyPlatform:Destroy() _G.SkyPlatform=nil end
+    if _G.SkySpawn then _G.SkySpawn:Destroy() _G.SkySpawn=nil end
+    print("Sky disabled")
+    return
+end
+
+-- Enable sky
+_G.SkyActive = true
+
+-- Utility function
+local function findRoot(char)
+    return char:FindFirstChild("HumanoidRootPart") or char.PrimaryPart
+end
+
+-- Create platform
+local platform = Instance.new("Part")
+platform.Name = "SkyPlatform"
+platform.Size = SKY_PLATFORM_SIZE
+platform.Anchored = true
+platform.CanCollide = true
+platform.Transparency = 0.55
+platform.Material = Enum.Material.Neon
+platform.Parent = Workspace
+_G.SkyPlatform = platform
+
+-- Create invisible spawn for respawn snap
+local spawn = Instance.new("SpawnLocation")
+spawn.Name = "SkyRespawn"
+spawn.Size = Vector3.new(6,1,6)
+spawn.Anchored = true
+spawn.CanCollide = false
+spawn.Transparency = 1
+spawn.Neutral = true
+spawn.Position = SKY_POSITION
+spawn.Parent = Workspace
+_G.SkySpawn = spawn
+
+-- Function to snap player & platform
+local function snapCharacter(char)
+    local root = findRoot(char)
+    if root then
+        root.CFrame = CFrame.new(SKY_POSITION + Vector3.new(0,5,0))
+        platform.CFrame = root.CFrame + SKY_PLATFORM_OFFSET
+    end
+end
+
+-- Follow loop
+_G.SkyPlatformConn = RunService.Heartbeat:Connect(function()
+    local char = player.Character
+    local root = char and findRoot(char)
+    if root and platform then
+        local pos = root.Position + SKY_PLATFORM_OFFSET
+        local lookDir = Vector3.new(root.CFrame.LookVector.X,0,root.CFrame.LookVector.Z)
+        if lookDir.Magnitude > 0 then
+            platform.CFrame = CFrame.new(pos, pos + lookDir.Unit)
+        else
+            platform.CFrame = CFrame.new(pos)
+        end
+    end
+end)
+
+-- Handle respawn
+_G.SkyRespawnConn = player.CharacterAdded:Connect(function(char)
+    task.wait(SKY_SNAP_DELAY)
+    snapCharacter(char)
+end)
+
+-- Snap immediately
+if player.Character then snapCharacter(player.Character) end
+
+print("Sky enabled; platform following you!")
     end,
  })
 
