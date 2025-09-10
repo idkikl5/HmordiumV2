@@ -37,7 +37,7 @@ local Window = Rayfield:CreateWindow({
     }
  })
 
- local FETab = Window:CreateTab("FE", 4483362458) -- Title, Image
+ local FETab = Window:CreateTab("FE", "shield") -- Title, Image
 
  local Slider = FETab:CreateSlider({
     Name = "WalkSpeed Slider",
@@ -70,7 +70,7 @@ local Button = FETab:CreateButton({
     end,
  })
 
- local MainTab = Window:CreateTab("Main", 4483362458) -- Title, Image
+ local MainTab = Window:CreateTab("Main", "skull")
 
  local Button = MainTab:CreateButton({
     Name = "Kill aura 1",
@@ -622,7 +622,7 @@ end)
  })
 
  
- local FunTab = Window:CreateTab("Fun", 4483362458) -- Title, Image
+ local FunTab = Window:CreateTab("Fun", "gamepad") -- Title, Image
 
 
 local Button = FunTab:CreateButton({
@@ -1294,7 +1294,8 @@ end)
     end,
  })
 
-  local FFTab = Window:CreateTab("FF", 4483362458) -- Title, Image
+  local FFTab = Window:CreateTab("FF", "swords")
+
 
   local Button = FFTab:CreateToggle({
     Name = "Best kill aura for loopfights rn",
@@ -1695,7 +1696,7 @@ end
 })
 
 
- local CreditsTab = Window:CreateTab("Credits", 4483362458) -- Title, Image
+ local CreditsTab = Window:CreateTab("Credits", "users") -- Title, Image
 
  local Button = CreditsTab:CreateButton({
     Name = "Credits: Sussy_end",
