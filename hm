@@ -1296,16 +1296,35 @@ end)
 
   local FFTab = Window:CreateTab("FF", 4483362458) -- Title, Image
 
- local Button = FFTab:CreateButton({
+ local Button = FFTab:CreateToggle({
     Name = "The best kill aura rn (loopbring)",
     Callback = function()
        local range = 10
 local player = game:GetService("Players").LocalPlayer
 local RunService = game:GetService("RunService")
 
-RunService.Heartbeat:Connect(function()
+-- Check if the script is already active
+if _G.AutoAttackActive then
+    -- Disable the script
+    if _G.AutoAttackConnection then
+        _G.AutoAttackConnection:Disconnect()
+        _G.AutoAttackConnection = nil
+    end
+    _G.AutoAttackActive = false
+    print("AutoAttack script disabled.")
+    return
+end
+
+-- Mark the script as active
+_G.AutoAttackActive = true
+
+-- Main loop
+_G.AutoAttackConnection = RunService.Heartbeat:Connect(function()
     local character = player.Character
     if not character then return end
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
     local tool = character:FindFirstChildOfClass("Tool")
     if not tool or not tool:FindFirstChild("Handle") then return end
     local handle = tool.Handle
@@ -1315,9 +1334,9 @@ RunService.Heartbeat:Connect(function()
             local char = other.Character
             if char then
                 local hum = char:FindFirstChild("Humanoid")
-                local hrp = char:FindFirstChild("HumanoidRootPart")
-                if hum and hum.Health > 0 and hrp then
-                    local dist = (hrp.Position - character.HumanoidRootPart.Position).Magnitude
+                local otherHRP = char:FindFirstChild("HumanoidRootPart")
+                if hum and hum.Health > 0 and otherHRP then
+                    local dist = (otherHRP.Position - hrp.Position).Magnitude
                     if dist <= range then
                         -- Activate tool once per tick
                         tool:Activate()
@@ -1333,7 +1352,9 @@ RunService.Heartbeat:Connect(function()
             end
         end
     end
-end) 
+end)
+
+print("AutoAttack script enabled.")
     end,
  })
 
