@@ -1373,13 +1373,7 @@ loadstring(game:HttpGet("https://pastefy.app/Qc1ZIUwO/raw", true))()
     end,
  })
 
- local Button = FFTab:CreateButton({
-    Name = "Primordium (OP)",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/RedstoneWare/Primordium/refs/heads/main/v2"))()
-    end,
- })
-
+ 
  local Input = FFTab:CreateInput({
    Name = "Banana = for asthetics",
    CurrentValue = "",
@@ -1389,6 +1383,65 @@ loadstring(game:HttpGet("https://pastefy.app/Qc1ZIUwO/raw", true))()
    Callback = function(Text)
    -- The function that takes place when the input is changed
    -- The variable (Text) is a string for the value in the text box
+   end,
+})
+
+local Toggle = FFTab:CreateToggle({
+   Name = "Primordium",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   --// Primordium Toggle by Tracking New GUIs
+
+-- Save baseline GUIs (before Primordium is loaded the first time)
+if not getgenv().BaselineGUIs then
+    getgenv().BaselineGUIs = {}
+    for _, gui in ipairs(game.CoreGui:GetChildren()) do
+        if gui:IsA("ScreenGui") then
+            table.insert(getgenv().BaselineGUIs, gui)
+        end
+    end
+    for _, gui in ipairs(game.Players.LocalPlayer.PlayerGui:GetChildren()) do
+        if gui:IsA("ScreenGui") then
+            table.insert(getgenv().BaselineGUIs, gui)
+        end
+    end
+end
+
+-- Cleanup function: remove any ScreenGui not in baseline
+local function cleanup()
+    local function shouldRemove(gui)
+        for _, baseline in ipairs(getgenv().BaselineGUIs) do
+            if gui == baseline then
+                return false
+            end
+        end
+        return gui:IsA("ScreenGui")
+    end
+
+    for _, gui in ipairs(game.CoreGui:GetChildren()) do
+        if shouldRemove(gui) then
+            gui:Destroy()
+        end
+    end
+    for _, gui in ipairs(game.Players.LocalPlayer.PlayerGui:GetChildren()) do
+        if shouldRemove(gui) then
+            gui:Destroy()
+        end
+    end
+end
+
+-- Toggle logic
+if getgenv().PrimordiumRunning then
+    print("⏹️ Primordium stopped")
+    getgenv().PrimordiumRunning = false
+    cleanup()
+else
+    print("▶️ Primordium started")
+    getgenv().PrimordiumRunning = true
+    cleanup() -- nuke leftovers before reload
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/RedstoneWare/Primordium/refs/heads/main/v2"))()
+end
    end,
 })
 
