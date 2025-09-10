@@ -1313,7 +1313,9 @@ end)
     end,
  })
 
- local Button = OPTab:CreateButton({
+  local FFTab = Window:CreateTab("FF", 4483362458) -- Title, Image
+
+ local Button = FFTab:CreateButton({
     Name = "The best kill aura rn (loopbring)",
     Callback = function()
        local range = 10
@@ -1354,7 +1356,7 @@ end)
     end,
  })
 
- local Button = OPTab:CreateButton({
+ local Button = FFTab:CreateButton({
     Name = "Op auto equip sword",
     Callback = function()
         local Players = game:GetService("Players")
@@ -1383,19 +1385,55 @@ end)
     end,
  })
 
- local Button = OPTab:CreateButton({
+ local Button = FFTab:CreateButton({
     Name = "OP float",
     Callback = function()  
 loadstring(game:HttpGet("https://pastefy.app/Qc1ZIUwO/raw", true))()
     end,
  })
 
- local Button = OPTab:CreateButton({
+ local Button = FFTab:CreateButton({
     Name = "Primordium (OP)",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/RedstoneWare/Primordium/refs/heads/main/v2"))()
     end,
  })
+
+ local Input = FFTab:CreateInput({
+   Name = "Banana = for asthetics",
+   CurrentValue = "",
+   PlaceholderText = "Input Placeholder",
+   RemoveTextAfterFocusLost = false,
+   Flag = "Input1",
+   Callback = function(Text)
+   -- The function that takes place when the input is changed
+   -- The variable (Text) is a string for the value in the text box
+   end,
+})
+
+  local Button = FFTab:CreateButton({
+    Name = "Lvl script",
+    Callback = function()
+        _G.lvlup = true
+
+while _G.lvlup == true do
+    wait(2.2)
+    for i = 2, 200 do
+        game:GetService("ReplicatedStorage").ClaimChallenge:FireServer(5, "An5nit43534per3plo34itdfs")
+    end
+end
+    end,
+ })
+
+local Button = FFTab:CreateButton({
+    Name = "Time script",
+    Callback = function()
+        for i = 1,80000 do
+    game.ReplicatedStorage.ChangeTime:FireServer("Anti333Exploitz123FF45324", 433, 429);
+end
+    end,
+ })
+
 
  local CreditsTab = Window:CreateTab("Credits", 4483362458) -- Title, Image
 
@@ -1407,7 +1445,7 @@ loadstring(game:HttpGet("https://pastefy.app/Qc1ZIUwO/raw", true))()
  })
 
  local Button = CreditsTab:CreateButton({
-    Name = "Reviewed by: No one yet ;( )",
+    Name = "Reviewed by: My beautiful girlfriend :D",
     Callback = function()
         print ("helloXD")
     end,
