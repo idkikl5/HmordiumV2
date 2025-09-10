@@ -1484,10 +1484,14 @@ local SKY_PLATFORM_OFFSET = Vector3.new(0, -3.5, 0)
 local SKY_SNAP_DELAY = 0.05
 
 local player = Players.LocalPlayer
-local PRIMARY_FALLBACK = "cudjdjfjfjsjajsjf"
-local SECONDARY_FALLBACK = "rajcovatovykompot24"
-local THIRDARY_FALLBACK = "macatypero69"
-local FOURTHDARY_FALLBACK = "qweatez"
+
+-- Priority list for teleport after sky disabled
+local TELEPORT_PRIORITY = {
+    "rajcovatovykompot24",
+    "macatypero69",
+    "qweatez",
+    "cudjdjfjfjsjajsjf"
+}
 
 -- Utility function
 local function findRoot(char)
@@ -1520,11 +1524,16 @@ if _G.SkyActive then
     print("Sky disabled")
 
     -- Teleport logic
-    if not teleportToPlayer(SECONDARY_FALLBACK) then
-        print("Failed to teleport to "..SECONDARY_FALLBACK..", trying "..PRIMARY_FALLBACK)
-        if not teleportToPlayer(PRIMARY_FALLBACK) then
-            print("Failed to teleport to "..PRIMARY_FALLBACK.." as well.")
+    local teleported = false
+    for _, username in ipairs(TELEPORT_PRIORITY) do
+        if teleportToPlayer(username) then
+            print("Teleported to "..username)
+            teleported = true
+            break
         end
+    end
+    if not teleported then
+        print("Failed to teleport to any priority user.")
     end
 
     return
