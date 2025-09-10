@@ -622,10 +622,10 @@ end)
  })
 
  
- local IdkTab = Window:CreateTab("Idk", 4483362458) -- Title, Image
+ local FunTab = Window:CreateTab("Fun", 4483362458) -- Title, Image
 
 
-local Button = IdkTab:CreateButton({
+local Button = FunTab:CreateButton({
     Name = "loopbring GUI (Better than infinite yield loopbring)",
     Callback = function()
         local Players = game:GetService("Players")
@@ -949,7 +949,7 @@ end)
     end,
  })
 
- local Button = IdkTab:CreateButton({
+ local Button = FunTab:CreateButton({
     Name = "Loopbring gui 2",
     Callback = function()
         local Players = game:GetService("Players")
@@ -1412,7 +1412,66 @@ print("ForceEquip script enabled.")
  })
 
  local Toggle = FFTab:CreateToggle({
-    Name = "Activate sky",
+   Name = "Primordium",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   --// Primordium Toggle by Tracking New GUIs
+
+-- Save baseline GUIs (before Primordium is loaded the first time)
+if not getgenv().BaselineGUIs then
+    getgenv().BaselineGUIs = {}
+    for _, gui in ipairs(game.CoreGui:GetChildren()) do
+        if gui:IsA("ScreenGui") then
+            table.insert(getgenv().BaselineGUIs, gui)
+        end
+    end
+    for _, gui in ipairs(game.Players.LocalPlayer.PlayerGui:GetChildren()) do
+        if gui:IsA("ScreenGui") then
+            table.insert(getgenv().BaselineGUIs, gui)
+        end
+    end
+end
+
+-- Cleanup function: remove any ScreenGui not in baseline
+local function cleanup()
+    local function shouldRemove(gui)
+        for _, baseline in ipairs(getgenv().BaselineGUIs) do
+            if gui == baseline then
+                return false
+            end
+        end
+        return gui:IsA("ScreenGui")
+    end
+
+    for _, gui in ipairs(game.CoreGui:GetChildren()) do
+        if shouldRemove(gui) then
+            gui:Destroy()
+        end
+    end
+    for _, gui in ipairs(game.Players.LocalPlayer.PlayerGui:GetChildren()) do
+        if shouldRemove(gui) then
+            gui:Destroy()
+        end
+    end
+end
+
+-- Toggle logic
+if getgenv().PrimordiumRunning then
+    print("⏹️ Primordium stopped")
+    getgenv().PrimordiumRunning = false
+    cleanup()
+else
+    print("▶️ Primordium started")
+    getgenv().PrimordiumRunning = true
+    cleanup() -- nuke leftovers before reload
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/RedstoneWare/Primordium/refs/heads/main/v2"))()
+end
+   end,
+})
+
+ local Toggle = FFTab:CreateToggle({
+    Name = "Activate",
     Callback = function()  
         local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -1425,25 +1484,53 @@ local SKY_PLATFORM_OFFSET = Vector3.new(0, -3.5, 0)
 local SKY_SNAP_DELAY = 0.05
 
 local player = Players.LocalPlayer
-
--- Toggle off if already active
-if _G.SkyActive then
-    _G.SkyActive = false
-    if _G.SkyPlatformConn then _G.SkyPlatformConn:Disconnect() _G.SkyPlatformConn=nil end
-    if _G.SkyRespawnConn then _G.SkyRespawnConn:Disconnect() _G.SkyRespawnConn=nil end
-    if _G.SkyPlatform then _G.SkyPlatform:Destroy() _G.SkyPlatform=nil end
-    if _G.SkySpawn then _G.SkySpawn:Destroy() _G.SkySpawn=nil end
-    print("Sky disabled")
-    return
-end
-
--- Enable sky
-_G.SkyActive = true
+local PRIMARY_FALLBACK = "cudjdjfjfjsjajsjf"
+local SECONDARY_FALLBACK = "rajcovatovykompot24"
+local THIRDARY_FALLBACK = "macatypero69"
 
 -- Utility function
 local function findRoot(char)
     return char:FindFirstChild("HumanoidRootPart") or char.PrimaryPart
 end
+
+local function teleportToPlayer(username)
+    local target = Players:FindFirstChild(username)
+    if target and target.Character then
+        local root = findRoot(target.Character)
+        local myRoot = findRoot(player.Character)
+        if root and myRoot then
+            myRoot.CFrame = root.CFrame + Vector3.new(2,0,0)
+            return true
+        end
+    end
+    return false
+end
+
+-- Toggle off if already active
+if _G.SkyActive then
+    -- Disable sky
+    _G.SkyActive = false
+
+    if _G.SkyPlatformConn then _G.SkyPlatformConn:Disconnect() _G.SkyPlatformConn=nil end
+    if _G.SkyRespawnConn then _G.SkyRespawnConn:Disconnect() _G.SkyRespawnConn=nil end
+    if _G.SkyPlatform then _G.SkyPlatform:Destroy() _G.SkyPlatform=nil end
+    if _G.SkySpawn then _G.SkySpawn:Destroy() _G.SkySpawn=nil end
+
+    print("Sky disabled")
+
+    -- Teleport logic
+    if not teleportToPlayer(SECONDARY_FALLBACK) then
+        print("Failed to teleport to "..SECONDARY_FALLBACK..", trying "..PRIMARY_FALLBACK)
+        if not teleportToPlayer(PRIMARY_FALLBACK) then
+            print("Failed to teleport to "..PRIMARY_FALLBACK.." as well.")
+        end
+    end
+
+    return
+end
+
+-- Enable sky
+_G.SkyActive = true
 
 -- Create platform
 local platform = Instance.new("Part")
@@ -1506,8 +1593,8 @@ print("Sky enabled; platform following you!")
  })
 
  
- local Input = FFTab:CreateInput({
-   Name = "Banana = for asthetics",
+ local Input = FunTab:CreateInput({
+   Name = "Ff stuff for fun 👇",
    CurrentValue = "",
    PlaceholderText = "Input Placeholder",
    RemoveTextAfterFocusLost = false,
@@ -1518,73 +1605,15 @@ print("Sky enabled; platform following you!")
    end,
 })
 
-local Toggle = FFTab:CreateToggle({
-   Name = "Primordium",
-   CurrentValue = false,
-   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-   --// Primordium Toggle by Tracking New GUIs
 
--- Save baseline GUIs (before Primordium is loaded the first time)
-if not getgenv().BaselineGUIs then
-    getgenv().BaselineGUIs = {}
-    for _, gui in ipairs(game.CoreGui:GetChildren()) do
-        if gui:IsA("ScreenGui") then
-            table.insert(getgenv().BaselineGUIs, gui)
-        end
-    end
-    for _, gui in ipairs(game.Players.LocalPlayer.PlayerGui:GetChildren()) do
-        if gui:IsA("ScreenGui") then
-            table.insert(getgenv().BaselineGUIs, gui)
-        end
-    end
-end
-
--- Cleanup function: remove any ScreenGui not in baseline
-local function cleanup()
-    local function shouldRemove(gui)
-        for _, baseline in ipairs(getgenv().BaselineGUIs) do
-            if gui == baseline then
-                return false
-            end
-        end
-        return gui:IsA("ScreenGui")
-    end
-
-    for _, gui in ipairs(game.CoreGui:GetChildren()) do
-        if shouldRemove(gui) then
-            gui:Destroy()
-        end
-    end
-    for _, gui in ipairs(game.Players.LocalPlayer.PlayerGui:GetChildren()) do
-        if shouldRemove(gui) then
-            gui:Destroy()
-        end
-    end
-end
-
--- Toggle logic
-if getgenv().PrimordiumRunning then
-    print("⏹️ Primordium stopped")
-    getgenv().PrimordiumRunning = false
-    cleanup()
-else
-    print("▶️ Primordium started")
-    getgenv().PrimordiumRunning = true
-    cleanup() -- nuke leftovers before reload
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/RedstoneWare/Primordium/refs/heads/main/v2"))()
-end
-   end,
-})
-
-local Button = FFTab:CreateButton({
+local Button = FunTab:CreateButton({
     Name = "Unlock all swords (Flex fight only)",
     Callback = function()
         game.ReplicatedStorage.UnlockedSwords:FireServer({true, true, true}, "894An3ti44Ex321P3llo99i3t")
     end,
  })
 
-  local Button = FFTab:CreateButton({
+  local Button = FunTab:CreateButton({
     Name = "Lvl script",
     Callback = function()
         _G.lvlup = true
@@ -1598,7 +1627,7 @@ end
     end,
  })
 
- local Toggle = FFTab:CreateToggle({
+ local Toggle = FunTab:CreateToggle({
    Name = "Time script",
    CurrentValue = false,
    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
