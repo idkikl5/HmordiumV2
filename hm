@@ -1296,10 +1296,10 @@ end)
 
   local FFTab = Window:CreateTab("FF", 4483362458) -- Title, Image
 
- local Button = FFTab:CreateToggle({
-    Name = "The best kill aura rn (loopbring)",
+  local Button = FFTab:CreateToggle({
+    Name = "Op auto equip sword",
     Callback = function()
-       local range = 10
+        local range = 10
 local player = game:GetService("Players").LocalPlayer
 local RunService = game:GetService("RunService")
 
@@ -1355,6 +1355,7 @@ _G.AutoAttackConnection = RunService.Heartbeat:Connect(function()
 end)
 
 print("AutoAttack script enabled.")
+
     end,
  })
 
