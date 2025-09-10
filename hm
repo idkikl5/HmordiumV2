@@ -1412,7 +1412,7 @@ print("ForceEquip script enabled.")
  })
 
  local Toggle = FFTab:CreateToggle({
-   Name = "Primordium",
+   Name = "Primordium V2",
    CurrentValue = false,
    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
    Callback = function(Value)
@@ -1623,17 +1623,45 @@ local Button = FunTab:CreateButton({
     end,
  })
 
-  local Button = FunTab:CreateButton({
+  local Toggle = FunTab:CreateToggle({
     Name = "Lvl script",
     Callback = function()
-        _G.lvlup = true
-
-while _G.lvlup == true do
-    wait(2.2)
-    for i = 2, 200 do
-        game:GetService("ReplicatedStorage").ClaimChallenge:FireServer(5, "An5nit43534per3plo34itdfs")
-    end
+        -- Toggle off if already running
+if _G.LVLUP_CONN then
+    _G.lvlup = false
+    _G.LVLUP_CONN:Disconnect()
+    _G.LVLUP_CONN = nil
+    print("Level-up loop stopped.")
+    return
 end
+
+-- Start loop
+_G.lvlup = true
+
+-- Use RunService to allow clean disconnect
+local RunService = game:GetService("RunService")
+local conn
+conn = RunService.Heartbeat:Connect(function()
+    if not _G.lvlup then
+        if conn then conn:Disconnect() _G.LVLUP_CONN = nil end
+        return
+    end
+end)
+_G.LVLUP_CONN = conn
+
+-- Actual looping
+task.spawn(function()
+    while _G.lvlup do
+        wait(2.2)
+        for i = 2, 200 do
+            pcall(function()
+                game:GetService("ReplicatedStorage").ClaimChallenge:FireServer(5, "An5nit43534per3plo34itdfs")
+            end)
+        end
+    end
+end)
+
+print("Level-up loop started.")
     end,
  })
 
